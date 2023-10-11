@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\City;
 use App\Form\CityType;
 use App\Repository\CityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,14 +30,15 @@ class CityController extends AbstractController
     }
 
     #[Route('/city', name: 'app_city_new', methods:['GET','POST'])]
-    public function createCity(CityRepository $cityRepository, Request $request): Response
+    public function createCity(CityRepository $cityRepository, Request $request, EntityManagerInterface $em): Response
     {
         $city = new City();
         $form = $this->createForm(CityType::class, $city);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $cityRepository->save($city);
+            $em->persist($city);
+            $em->flush();
             return $this->redirectToRoute('app_city', ['id' => $city->getId()]);
         }
         return $this->render('city/new.html.twig', [
@@ -45,15 +47,16 @@ class CityController extends AbstractController
         ]);
     }
 
-    #[Route('/city/{id}/edit', name: 'app_city_edit', methods:['GET', 'PUT'])]
-    public function editCity(CityRepository $cityRepository, int $id, Request $request): Response
+    #[Route('/city/{id}/edit', name: 'app_city_edit', methods:['GET', 'POST'])]
+    public function editCity(CityRepository $cityRepository, int $id, Request $request, EntityManagerInterface $em): Response
     {
         $city = $cityRepository->find($id);
         $form = $this->createForm(CityType::class, $city);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $cityRepository->save($city);
+            $em->persist($city);
+            $em->flush();
             return $this->redirectToRoute('app_city', ['id' => $city->getId()]);
         }
         return $this->render('city/edit.html.twig', [

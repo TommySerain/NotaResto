@@ -9,11 +9,9 @@
 </style>
 
 <div>
-    <h1>Détails de la ville ✅</h1>
-
-    <h2>Nom de la ville : {{city.name}}</h2>
-    <h2>Code postal de la ville : {{city.zipCode}}</h2>
-    <h2>Id de la ville : {{city.id}}</h2>
-
+    <h1>Editer une review</h1>
+    {{ form_start(formCreate, {'method': 'POST'}) }}
+        {{ form_widget(formCreate) }}
+    {{ form_end(formCreate) }}
 </div>
 {% endblock %}

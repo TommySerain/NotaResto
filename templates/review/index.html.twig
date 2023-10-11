@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CityController!{% endblock %}
+{% block title %}Hello ReviewController!{% endblock %}
 
 {% block body %}
 <style>
@@ -9,10 +9,11 @@
 </style>
 
 <div>
-    <h1>Hello! ✅</h1>
+    <h1>Hello! ✅ Ici les Reviews</h1>
     <ul>
-        {% for city in cities %}
-            <li>{{city.name}}</li>
+        {% for review in reviews %}
+            <li>note :{{review.rate}}</li>
+            <li>restaurant :{{review.restaurant}}</li>
         {% endfor %}
     </ul>
 </div>
