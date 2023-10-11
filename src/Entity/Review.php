@@ -23,6 +23,10 @@ class Review
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $posted_date = null;
 
+    #[ORM\ManyToOne(inversedBy: 'reviews')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Restaurant $restaurant = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +64,18 @@ class Review
     public function setPostedDate(\DateTimeInterface $posted_date): static
     {
         $this->posted_date = $posted_date;
+
+        return $this;
+    }
+
+    public function getRestaurant(): ?Restaurant
+    {
+        return $this->restaurant;
+    }
+
+    public function setRestaurant(?Restaurant $restaurant): static
+    {
+        $this->restaurant = $restaurant;
 
         return $this;
     }
