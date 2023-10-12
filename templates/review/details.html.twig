@@ -13,10 +13,11 @@
 
             <h2>note :{{review.rate}}</h2>
             <h2>commentaire :{{review.comment}}</h2>
-            <h2>date du post :{{review.posted_date}}</h2>
-            <h2>restaurant :{{review.restaurant}}</h2>
+            <h2>date du post :{{review.posted_date|date("d/m/Y")}}</h2>
+            <h2>restaurant :{{review.restaurant.name}}</h2>
 
 </div>
 
 <a href="{{ path('app_review_index') }}">back to list</a>
+{{ include('review/_delete_form.html.twig') }}
 {% endblock %}

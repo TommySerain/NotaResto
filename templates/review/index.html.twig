@@ -12,8 +12,14 @@
     <h1>Hello! ✅ Ici les Reviews</h1>
     <ul>
         {% for review in reviews %}
-            <li>note :{{review.rate}}</li>
-            <li>restaurant :{{review.restaurant}}</li>
+        <li>
+            <p>Review id : {{review.id}}</p>
+            <p>Note :{{review.rate}}</p>
+            <p>Restaurant :{{review.restaurant.name}}</p>
+            <a href="{{ path('app_review_show', {'id': review.id}) }}">show</a>
+            <a href="{{ path('app_review_edit', {'id': review.id}) }}">edit</a>
+        </li>
+
         {% endfor %}
     </ul>
 </div>

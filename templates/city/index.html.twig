@@ -13,6 +13,8 @@
     <ul>
         {% for city in cities %}
             <li>{{city.name}}</li>
+                    <a href="{{ path('app_city_show', {'id': city.id}) }}">show</a>
+                    <a href="{{ path('app_city_edit', {'id': city.id}) }}">edit</a>
         {% endfor %}
     </ul>
 </div>

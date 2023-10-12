@@ -56,7 +56,7 @@ class Review
         return $this;
     }
 
-    public function getPostedDate(): ?\DateTimeInterface
+    public function getposted_date(): ?\DateTimeInterface
     {
         return $this->posted_date;
     }

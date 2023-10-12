@@ -33,7 +33,7 @@ class CityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($city);
             $em->flush();
-            return $this->redirectToRoute('app_city', ['id' => $city->getId()]);
+            return $this->redirectToRoute('app_city_index', ['id' => $city->getId()]);
         }
         return $this->render('city/new.html.twig', [
             'city' => $city,
@@ -49,8 +49,6 @@ class CityController extends AbstractController
         ]);
     }
 
-
-
     #[Route('/{id}/edit', name: 'app_city_edit', methods:['GET', 'POST'])]
     public function editCity(CityRepository $cityRepository, int $id, Request $request, EntityManagerInterface $em): Response
     {
@@ -61,7 +59,7 @@ class CityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($city);
             $em->flush();
-            return $this->redirectToRoute('app_city', ['id' => $city->getId()]);
+            return $this->redirectToRoute('app_city_index', ['id' => $city->getId()]);
         }
         return $this->render('city/edit.html.twig', [
             'city' => $city,
@@ -69,13 +67,13 @@ class CityController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_city_delete', methods:['DELETE'])]
-    public function deleteCity(CityRepository $cityRepository, int $id): Response
+    #[Route('/{id}', name: 'app_city_delete', methods:['POST'])]
+    public function deleteCity(CityRepository $cityRepository, EntityManagerInterface $em, int $id): Response
     {
         $city = $cityRepository->find($id);
-        $cityRepository->remove($city);
-        $cityRepository->flush();
+        $em->remove($city);
+        $em->flush();
         
-        return $this->redirectToRoute('app_cities');
+        return $this->redirectToRoute('app_city_index');
     }
 }

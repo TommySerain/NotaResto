@@ -10,9 +10,9 @@
 
 <div>
     <h1>Editer une review</h1>
-    {{ form_start(formCreate, {'method': 'POST'}) }}
-        {{ form_widget(formCreate) }}
-    {{ form_end(formCreate) }}
+    {{ form_start(formEdit, {'method': 'POST'}) }}
+        {{ form_widget(formEdit) }}
+    {{ form_end(formEdit) }}
 </div>
 
 <a href="{{ path('app_review_index') }}">back to list</a>

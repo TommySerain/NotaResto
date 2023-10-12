@@ -6,6 +6,7 @@ use App\Entity\Review;
 use App\Form\ReviewType;
 use App\Repository\ReviewRepository;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +24,7 @@ class ReviewController extends AbstractController
     }
 
     #[Route('/new', name: 'app_review_new', methods:['GET','POST'])]
-    public function createReview(ReviewRepository $reviewRepository, Request $request): Response
+    public function createReview(EntityManagerInterface $em, Request $request): Response
     {
         $review = new Review();
         $form = $this->createForm(ReviewType::class, $review);
@@ -31,8 +32,9 @@ class ReviewController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $review->setPostedDate(new DateTime());
-            $reviewRepository->save($review);
-            return $this->redirectToRoute('app_review', ['id' => $review->getId()]);
+            $em->persist($review);
+            $em->flush();
+            return $this->redirectToRoute('app_review_index', ['id' => $review->getId()]);
         }
         return $this->renderForm('review/new.html.twig', [
             'review' => $review,
@@ -49,29 +51,30 @@ class ReviewController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_review_edit', methods:['GET', 'POST'])]
-    public function editReview(ReviewRepository $reviewRepository, int $id, Request $request): Response
+    public function editReview(ReviewRepository $reviewRepository, int $id, Request $request, EntityManagerInterface $em): Response
     {
         $review = $reviewRepository->find($id);
         $form = $this->createForm(ReviewType::class, $review);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $reviewRepository->save($review);
-            return $this->redirectToRoute('app_review', ['id' => $review->getId()]);
+            $em->persist($review);
+            $em->flush();
+            return $this->redirectToRoute('app_review_index', ['id' => $review->getId()]);
         }
         return $this->renderForm('review/edit.html.twig', [
             'review' => $review,
-            'formEdit' => $form->createView(),
+            'formEdit' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_review_delete', methods:['DELETE'])]
-    public function deleteReview(ReviewRepository $reviewRepository, int $id): Response
+    #[Route('/{id}', name: 'app_review_delete', methods:['POST'])]
+    public function deleteReview(ReviewRepository $reviewRepository, EntityManagerInterface $em,  int $id): Response
     {
         $review = $reviewRepository->find($id);
-        $reviewRepository->remove($review);
-        $reviewRepository->flush();
+        $em->remove($review);
+        $em->flush();
         
-        return $this->redirectToRoute('app_reviews');
+        return $this->redirectToRoute('app_review_index');
     }
 }
