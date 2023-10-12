@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CityController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div>
+    <h1>Détails de la review ✅</h1>
+
+            <h2>note :{{review.rate}}</h2>
+            <h2>commentaire :{{review.comment}}</h2>
+            <h2>date du post :{{review.posted_date|date("d/m/Y")}}</h2>
+            <h2>restaurant :{{review.restaurant.name}}</h2>
+
+</div>
+
+<a href="{{ path('app_review_index') }}">back to list</a>
+{{ include('review/_delete_form.html.twig') }}
+{% endblock %}
