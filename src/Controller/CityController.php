@@ -11,9 +11,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+#[Route('/city')]
 class CityController extends AbstractController
 {
-    #[Route('/cities', name: 'app_cities', methods:['GET'])]
+    #[Route('/', name: 'app_city_index', methods:['GET'])]
     public function getCities(CityRepository $cityRepository): Response
     {
         return $this->render('city/index.html.twig', [
@@ -21,16 +23,8 @@ class CityController extends AbstractController
         ]);
     }
 
-    #[Route('/city/{id}', name: 'app_city', methods:['GET'])]
-    public function getCity(CityRepository $cityRepository, int $id): Response
-    {
-        return $this->render('city/details.html.twig', [
-            'city' => $cityRepository->find($id),
-        ]);
-    }
-
-    #[Route('/city', name: 'app_city_new', methods:['GET','POST'])]
-    public function createCity(CityRepository $cityRepository, Request $request, EntityManagerInterface $em): Response
+    #[Route('/new', name: 'app_city_new', methods:['GET','POST'])]
+    public function createCity(Request $request, EntityManagerInterface $em): Response
     {
         $city = new City();
         $form = $this->createForm(CityType::class, $city);
@@ -47,7 +41,17 @@ class CityController extends AbstractController
         ]);
     }
 
-    #[Route('/city/{id}/edit', name: 'app_city_edit', methods:['GET', 'POST'])]
+    #[Route('/{id}', name: 'app_city_show', methods:['GET'])]
+    public function getCity(CityRepository $cityRepository, int $id): Response
+    {
+        return $this->render('city/details.html.twig', [
+            'city' => $cityRepository->find($id),
+        ]);
+    }
+
+
+
+    #[Route('/{id}/edit', name: 'app_city_edit', methods:['GET', 'POST'])]
     public function editCity(CityRepository $cityRepository, int $id, Request $request, EntityManagerInterface $em): Response
     {
         $city = $cityRepository->find($id);
@@ -65,7 +69,7 @@ class CityController extends AbstractController
         ]);
     }
 
-    #[Route('/city/{id}', name: 'app_city_delete', methods:['DELETE'])]
+    #[Route('/{id}', name: 'app_city_delete', methods:['DELETE'])]
     public function deleteCity(CityRepository $cityRepository, int $id): Response
     {
         $city = $cityRepository->find($id);
