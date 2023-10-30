@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Restaurant;
 use App\Form\RestaurantType;
 use App\Repository\RestaurantRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -77,5 +78,17 @@ class RestaurantController extends AbstractController
         }
 
         return $this->redirectToRoute('app_restaurant_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    public function getLastRestaurants(RestaurantRepository $restaurantRepository):Response{
+        return $this->render('home/index.html.twig', [
+            'lastRestaurants' => $restaurantRepository->getLastRestaurants(),
+        ]);
+    }
+
+    public function getReviews(Restaurant $restaurant):Response{
+        return $this->render('home/index.html.twig', [
+            'reviews' => $restaurant->getReviews(),
+        ]);
     }
 }

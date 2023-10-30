@@ -152,4 +152,19 @@ class Restaurant
 
         return $this;
     }
+
+    public function getAverageRating(): float|String{
+        
+        if(count($this->getReviews())!==0){
+            $total = 0;
+            $count = 0;
+            foreach ($this->reviews as $review){
+                $total += $review->getRate();
+                $count++;
+            }
+            return $total / $count;
+        }
+        return "Aucune note";
+    }
+
 }
