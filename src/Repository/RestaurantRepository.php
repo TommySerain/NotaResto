@@ -22,20 +22,14 @@ class RestaurantRepository extends ServiceEntityRepository
     }
 
     public function getLastRestaurants(): array{
-        return $this->createQueryBuilder('restaurant')
-            ->orderBy('restaurant.id', 'DESC')
+        return $this->createQueryBuilder('r')
+            ->orderBy('r.id', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult();
     }
 
-    public function getRestaurantWithBestRates(): array{
-        return $this->createQueryBuilder('restaurant')
-            ->orderBy('restaurant.getAverageRating', 'DESC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
-    }
+
 
 //    /**
 //     * @return Restaurant[] Returns an array of Restaurant objects

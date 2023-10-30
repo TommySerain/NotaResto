@@ -15,8 +15,9 @@
     {% for restaurant in restaurants %}
         <div class="w-50">
             <h2>{{ restaurant.name }}</h2>
-                <h3>Note : {{restaurant.getAverageRating()}}</h3>
+                <h3>Note : {{restaurant.averageRating}}</h3>
         </div>
+        
     {% endfor %}
 </div>
 {% endblock %}

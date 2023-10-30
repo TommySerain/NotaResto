@@ -38,6 +38,19 @@ class ReviewRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function findBestTenRatings() {
+
+        return $this->createQueryBuilder('r')
+            ->select('restaurant.id as restaurantId')
+            ->innerJoin('r.restaurant', 'restaurant')
+            ->groupBy('restaurant')
+            ->orderBy('AVG(r.rate)', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 //    /**
 //     * @return Review[] Returns an array of Review objects
 //     */
