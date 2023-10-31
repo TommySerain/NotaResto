@@ -11,14 +11,14 @@
 <section class="container">
     <h1 class="fs-1 fw-bold">Bienvenue sur NotaResto</h1>
     <div class= "row">
-    {% for restaurant in restaurants %}
-        <div class="col-4 my-3 g-4">
-            <a href="{{ path('app_restaurant_show_details', {'id': restaurant.id}) }}" class="text-decoration-none text-white">
-                <div class="p-3 bg-secondary h-100">
-                    <h2>{{ restaurant.name }}</h2>
-                        <h3>Note : {{restaurant.averageRating}}</h3>
-                </div>
-            </a>
+    {% for user in users %}
+        <div class="col-4 my-3 g-4 text-white">
+            <div class="p-3 bg-secondary h-100">
+                <h2>{{ user.email }}</h2>
+                    <h3>Nom : {{user.lastname}}</h3>
+                    <h3>Prénom : {{user.firstname}}</h3>
+                    <h3>Ville : {{user.city.name}}</h3>
+            </div>
         </div>
     {% endfor %}
     </div>

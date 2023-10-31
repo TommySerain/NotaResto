@@ -24,6 +24,17 @@
                 <td>{{ restaurant.address }}</td>
             </tr>
 
+            <tr>
+                <th>reviews</th>
+                <td></td>
+                {% for review in restaurant.reviews %}
+                <tr>
+                    <th>{{ review.rate }}</th>
+                    <td>{{ review.comment }}</td>
+                </tr>
+                {% endfor %}
+            </tr>
+
         </tbody>
     </table>
 

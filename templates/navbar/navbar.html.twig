@@ -1,0 +1,21 @@
+    <nav class="navbar" style="background-color: #e3f2fd;>
+        <div class="container-fluid">
+            <a class="navbar-brand mx-4" href="/">NotaResto</a>
+            <a class="text-decoration-none text-black" href="#">Mes restaurants</a>
+            <a class="text-decoration-none text-black" href="{{path("app_restaurant_new")}}">Ajouter un restaurants</a>
+            <a class="text-decoration-none text-black" href="{{path("app_restaurant_all")}}">Tous les restaurants</a>
+            <a class="text-decoration-none text-black" href="{{path("app_user_all")}}">Tous les utilisateurs</a>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Code postal" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <div class="d-flex">
+                {% if app.user %}
+                    <span class="mx-4 my-auto">Bienvenue {{ app.user.email }}</span>
+                    <a class="btn btn-outline-success mx-4" href="/logout">logout</a>
+                    {% else %}
+                        <a class="btn btn-outline-success mx-4" href="/login">se connecter</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>

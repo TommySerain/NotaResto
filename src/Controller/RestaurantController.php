@@ -43,6 +43,21 @@ class RestaurantController extends AbstractController
         ]);
     }
 
+    #[Route('/list', name: 'app_restaurant_all', methods: ['GET'])]
+    public function getAllRestaurants(RestaurantRepository $restaurantRepository): Response{
+        return $this->render('restaurant/listAll.html.twig', [
+            'restaurants' => $restaurantRepository->findAll(),
+        ]);
+    }
+
+    #[Route('/details/{id}', name: 'app_restaurant_show_details', methods: ['GET'])]
+    public function showOne(Restaurant $restaurant): Response
+    {
+        return $this->render('restaurant/details.html.twig', [
+            'restaurant' => $restaurant,
+        ]);
+    }
+
     #[Route('/{id}', name: 'app_restaurant_show', methods: ['GET'])]
     public function show(Restaurant $restaurant): Response
     {
@@ -91,4 +106,6 @@ class RestaurantController extends AbstractController
             'reviews' => $restaurant->getReviews(),
         ]);
     }
+
+
 }

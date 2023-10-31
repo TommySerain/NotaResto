@@ -34,6 +34,9 @@ class Restaurant
     #[ORM\JoinColumn(nullable: false)]
     private ?City $city = null;
 
+    #[ORM\ManyToOne(inversedBy: 'restaurant')]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -165,6 +168,18 @@ class Restaurant
             return $total / $count;
         }
         return "Aucune note";
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
     }
 
 }
