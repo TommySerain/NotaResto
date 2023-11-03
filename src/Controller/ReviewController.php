@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/review')]
 class ReviewController extends AbstractController
 {
-    #[Route('/', name: 'app_review_index', methods:['GET'])]
+    #[Route('/admin', name: 'app_review_index', methods:['GET'])]
     public function getReviews(ReviewRepository $ReviewRepository): Response
     {
         return $this->render('review/index.html.twig', [
@@ -42,7 +42,7 @@ class ReviewController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_review_show', methods:['GET'])]
+    #[Route('/admin/{id}', name: 'app_review_show', methods:['GET'])]
     public function getReview(ReviewRepository $reviewRepository, int $id): Response
     {
         return $this->render('review/details.html.twig', [

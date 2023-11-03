@@ -2,20 +2,30 @@
 
 namespace App\Controller;
 
+use App\Entity\Picture;
 use App\Entity\Restaurant;
+use App\Entity\Review;
+use App\Entity\ReviewResponse;
+use App\Form\NewPictureType;
+use App\Form\NewReviewType;
 use App\Form\RestaurantType;
+use App\Form\ReviewResponseType;
 use App\Repository\RestaurantRepository;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\ReviewRepository;
+use App\Services\FileUploader;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/restaurant')]
 class RestaurantController extends AbstractController
 {
-    #[Route('/', name: 'app_restaurant_index', methods: ['GET'])]
+    #[Route('/admin', name: 'app_restaurant_index', methods: ['GET'])]
     public function index(RestaurantRepository $restaurantRepository): Response
     {
         return $this->render('restaurant/index.html.twig', [
@@ -31,6 +41,8 @@ class RestaurantController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $restaurant = $form->getData();
+            $restaurant->setUser($this->getUser());
             $entityManager->persist($restaurant);
             $entityManager->flush();
 
@@ -50,15 +62,79 @@ class RestaurantController extends AbstractController
         ]);
     }
 
-    #[Route('/details/{id}', name: 'app_restaurant_show_details', methods: ['GET'])]
-    public function showOne(Restaurant $restaurant): Response
-    {
-        return $this->render('restaurant/details.html.twig', [
-            'restaurant' => $restaurant,
+    #[Route('/MyRestaurants/{id}', name: 'app_my_restaurants', methods: ['GET'])]
+    public function getRestaurantsByCurrentUser(RestaurantRepository $restaurantRepository, Security $security): Response {
+        $user = $security->getUser();
+    
+        if (!$user) {
+            throw new AccessDeniedException('Il faut être connecté pour accéder à cette page.');
+        }
+    
+        $restaurants = $restaurantRepository->findBy(['user' => $user]);
+    
+        return $this->render('restaurant/restaurantsByUser.html.twig', [
+            'restaurants' => $restaurants,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_restaurant_show', methods: ['GET'])]
+    #[Route('/details/{id}', name: 'app_restaurant_show_details', methods: ['GET', 'POST'])]
+    public function showOne(Restaurant $restaurant,  Request $request, EntityManagerInterface $entityManager, FileUploader $fileUploader, ReviewRepository $reviewRepository): Response
+    {
+        $picture = new Picture();
+        $formPicture = $this->createForm(NewPictureType::class, $picture);
+        $formPicture->handleRequest($request);
+        if ($formPicture->isSubmitted() && $formPicture->isValid()){
+            $file = $formPicture['fileName']->getData();
+            if ($file){
+                $fileName = $fileUploader->upload($file);
+                $picture->setFileName($fileName);
+                $picture->setRestaurant($restaurant);
+            }else{
+                return $this->redirectToRoute('app_restaurant_show_details', ['id'=>$restaurant->getId()], Response::HTTP_SEE_OTHER);
+            }
+            $entityManager->persist($picture);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_restaurant_show_details', ['id'=>$restaurant->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        $review = new Review();
+        $formReview = $this->createForm(NewReviewType::class, $review);
+        $formReview->handleRequest($request);
+        if ($formReview->isSubmitted() && $formReview->isValid()) {
+            $review = $formReview->getData();
+            $review->setuser($this->getUser());
+            $review->setRestaurant($restaurant);
+            $review->setPostedDate(new DateTime());
+            $entityManager->persist($review);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_restaurant_show_details', ['id'=>$restaurant->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        $reviewResponse = new ReviewResponse();
+        $formReviewResponse = $this->createForm(ReviewResponseType::class, $reviewResponse);
+        $formReviewResponse->handleRequest($request);
+        if ($formReviewResponse->isSubmitted() && $formReviewResponse->isValid()){
+            $reviewResponse = $formReviewResponse->getData();
+            $reviewResponse->setPostedDate(new DateTime());
+            $review = $reviewRepository->find($request->request->get('review_id'));
+            $reviewResponse->setReview($review);
+
+            $entityManager->persist($reviewResponse);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_restaurant_show_details', ['id'=>$restaurant->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('restaurant/details.html.twig', [
+            'restaurant' => $restaurant,
+            'formReview'=>$formReview->createView(),
+            'formPicture' => $formPicture->createView(),
+            'formReviewResponse' => $formReviewResponse->createView(),
+        ]);
+    }
+
+    #[Route('/admin/{id}', name: 'app_restaurant_show', methods: ['GET'])]
     public function show(Restaurant $restaurant): Response
     {
         return $this->render('restaurant/show.html.twig', [

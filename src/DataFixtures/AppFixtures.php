@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\City;
 use App\Entity\Restaurant;
 use App\Entity\Review;
+use App\Entity\ReviewResponse;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -20,6 +21,7 @@ class AppFixtures extends Fixture
     const NB_REVIEW = 20;
     const NB_USER_RESTORER = 20;
     const NB_USER_REGULAR = 20;
+    const NB_REVIEW_RESPONSE = 2;
 
     public function load(ObjectManager $manager): void
     {
@@ -65,11 +67,11 @@ class AppFixtures extends Fixture
             ->setLastname($faker->lastName())
             ->setAddress($faker->address())
             ->setCity($faker->randomElement($cities))
-            ->setRoles(['ROLE_USER'])
+            ->setRoles([])
             ;
 
             $manager->persist($userRegular);
-            $users[]=$userRegular;
+            // $users[]=$userRegular;
         }
 
 
@@ -94,6 +96,14 @@ class AppFixtures extends Fixture
             ->setRestaurant($faker->randomElement($restaurants));
             $manager->persist($review);
             $reviews[] = $review;
+        }
+
+        for($i = 0; $i < self::NB_REVIEW_RESPONSE; $i++) {
+            $reviewResponse = new ReviewResponse();
+            $reviewResponse->setComment($faker->text())
+            ->setPostedDate($faker->dateTime())
+            ->setReview($faker->randomElement($reviews));
+            $manager->persist($reviewResponse);
         }
 
         $manager->flush();

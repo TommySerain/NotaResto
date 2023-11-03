@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New ReviewResponse{% endblock %}
+
+{% block body %}
+    <h1>Create new ReviewResponse</h1>
+
+    {{ include('review_response/_form.html.twig') }}
+
+    <a href="{{ path('app_review_response_index') }}">back to list</a>
+{% endblock %}

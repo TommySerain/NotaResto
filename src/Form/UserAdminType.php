@@ -12,9 +12,15 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UserType extends AbstractType
+class UserAdminType extends AbstractType
 {
     private Array $cities=[];
+    private $possibleRoles = [
+        'ROLE_ADMIN' => 'ROLE_ADMIN',
+        'ROLE_RESTORER' => 'ROLE_RESTORER',
+        'ROLE_USER' => 'ROLE_USER',
+    ];
+
 
     public function __construct(CityRepository $cityRepository)
     {
@@ -23,16 +29,12 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', EmailType::class)
-            ->add('password', PasswordType::class)
-            ->add('firstname', TextType::class)
-            ->add('lastname', TextType::class)
-            ->add('address', TextType::class)
-            ->add('city', ChoiceType::class, [
-                'choices' => $this->cities,
-                'choice_label' => 'name',
-                'multiple' => false,
-                'expanded' => false,
+            ->add('roles', ChoiceType::class, [
+                'choices' => [
+                    $this->possibleRoles
+                ],
+                'multiple' => true,
+                'expanded' => true,
                 'required' => true,
             ])
         ;
