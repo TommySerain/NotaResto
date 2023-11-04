@@ -33,4 +33,10 @@ class HomeController extends AbstractController
             'restaurants' => $tenBestRestaurants,
         ]);
     }
+
+    #[Route('/amdin', name: 'app_admin')]
+    public function admin()
+    {
+        return $this->render('home/admin.html.twig');
+    }
 }

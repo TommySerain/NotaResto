@@ -2,11 +2,7 @@
 	<div class="container-fluid">
 		<a class="navbar-brand mx-4" href="/">NotaResto</a>
 		{% if app.user and ("ROLE_ADMIN" in app.user.roles) %}
-			<a class="text-decoration-none text-black" href="{{ path('app_restaurant_index') }}">Admin restaurants</a>
-			<a class="text-decoration-none text-black" href="{{ path('app_city_index') }}">Admin cities</a>
-			<a class="text-decoration-none text-black" href="{{ path('app_picture_index') }}">Admin pictures</a>
-			<a class="text-decoration-none text-black" href="{{ path('app_review_index') }}">Admin reviews</a>
-			<a class="text-decoration-none text-black" href="{{ path('app_user_index') }}">Admin users</a>
+			<a class="text-decoration-none text-black" href="{{ path('app_admin') }}">Administration</a>
 		{% endif %}
 		{% if app.user and ("ROLE_RESTORER" in app.user.roles or "ROLE_ADMIN" in app.user.roles) %}
 			<a class="text-decoration-none text-black" href="{{ path('app_my_restaurants', {'id': app.user.id}) }}">Mes restaurants</a>
