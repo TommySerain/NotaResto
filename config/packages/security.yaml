@@ -43,6 +43,7 @@ security:
     access_control:
         - { path: ^/restaurant/list, roles: ['ROLE_USER', IS_AUTHENTICATED_ANONYMOUSLY] }
         - { path: ^/restaurant/details, roles: ['ROLE_USER', IS_AUTHENTICATED_ANONYMOUSLY] }
+        - { path: ^/restaurant/restaurantsByZip, roles: ['ROLE_USER', IS_AUTHENTICATED_ANONYMOUSLY] }
         - { path: ^/picture, roles: ROLE_RESTORER }
         - { path: ^/restaurant, roles: ROLE_RESTORER }
         - { path: ^/user/admin, roles: ROLE_ADMIN }

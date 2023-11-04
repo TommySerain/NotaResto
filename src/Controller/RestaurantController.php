@@ -10,6 +10,7 @@ use App\Form\NewPictureType;
 use App\Form\NewReviewType;
 use App\Form\RestaurantType;
 use App\Form\ReviewResponseType;
+use App\Repository\CityRepository;
 use App\Repository\RestaurantRepository;
 use App\Repository\ReviewRepository;
 use App\Services\FileUploader;
@@ -56,25 +57,47 @@ class RestaurantController extends AbstractController
     }
 
     #[Route('/list', name: 'app_restaurant_all', methods: ['GET'])]
-    public function getAllRestaurants(RestaurantRepository $restaurantRepository): Response{
+    public function getAllRestaurants(RestaurantRepository $restaurantRepository): Response
+    {
         return $this->render('restaurant/listAll.html.twig', [
             'restaurants' => $restaurantRepository->findAll(),
         ]);
     }
 
     #[Route('/MyRestaurants/{id}', name: 'app_my_restaurants', methods: ['GET'])]
-    public function getRestaurantsByCurrentUser(RestaurantRepository $restaurantRepository, Security $security): Response {
+    public function getRestaurantsByCurrentUser(RestaurantRepository $restaurantRepository, Security $security): Response
+    {
         $user = $security->getUser();
-    
+
         if (!$user) {
             throw new AccessDeniedException('Il faut être connecté pour accéder à cette page.');
         }
-    
+
         $restaurants = $restaurantRepository->findBy(['user' => $user]);
-    
+
         return $this->render('restaurant/restaurantsByUser.html.twig', [
             'restaurants' => $restaurants,
         ]);
+    }
+
+    #[Route('/restaurantsByZip', name: 'app_restaurants_by_zip', methods: ['GET'])]
+    public function getRestaurantsByZipCode(RestaurantRepository $restaurantRepository, CityRepository $cityRepository): Response
+    {
+        if ($_GET) {
+            $zipCode = $_GET['zipcode'];
+            $city = $cityRepository->findBy(['zipCode' => $zipCode]);
+
+            if (!$city) {
+                $restaurants = $cityRepository->findAll();
+                return $this->redirectToRoute('app_restaurant_all');
+            } else {
+                $restaurants = $restaurantRepository->findBy(['city' => $city]);
+            }
+
+            return $this->render('home/index.html.twig', [
+                'restaurants' => $restaurants,
+            ]);
+        }
     }
 
     #[Route('/details/{id}', name: 'app_restaurant_show_details', methods: ['GET', 'POST'])]
@@ -83,18 +106,18 @@ class RestaurantController extends AbstractController
         $picture = new Picture();
         $formPicture = $this->createForm(NewPictureType::class, $picture);
         $formPicture->handleRequest($request);
-        if ($formPicture->isSubmitted() && $formPicture->isValid()){
+        if ($formPicture->isSubmitted() && $formPicture->isValid()) {
             $file = $formPicture['fileName']->getData();
-            if ($file){
+            if ($file) {
                 $fileName = $fileUploader->upload($file);
                 $picture->setFileName($fileName);
                 $picture->setRestaurant($restaurant);
-            }else{
-                return $this->redirectToRoute('app_restaurant_show_details', ['id'=>$restaurant->getId()], Response::HTTP_SEE_OTHER);
+            } else {
+                return $this->redirectToRoute('app_restaurant_show_details', ['id' => $restaurant->getId()], Response::HTTP_SEE_OTHER);
             }
             $entityManager->persist($picture);
             $entityManager->flush();
-            return $this->redirectToRoute('app_restaurant_show_details', ['id'=>$restaurant->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_restaurant_show_details', ['id' => $restaurant->getId()], Response::HTTP_SEE_OTHER);
         }
 
         $review = new Review();
@@ -108,13 +131,13 @@ class RestaurantController extends AbstractController
             $entityManager->persist($review);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_restaurant_show_details', ['id'=>$restaurant->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_restaurant_show_details', ['id' => $restaurant->getId()], Response::HTTP_SEE_OTHER);
         }
 
         $reviewResponse = new ReviewResponse();
         $formReviewResponse = $this->createForm(ReviewResponseType::class, $reviewResponse);
         $formReviewResponse->handleRequest($request);
-        if ($formReviewResponse->isSubmitted() && $formReviewResponse->isValid()){
+        if ($formReviewResponse->isSubmitted() && $formReviewResponse->isValid()) {
             $reviewResponse = $formReviewResponse->getData();
             $reviewResponse->setPostedDate(new DateTime());
             $review = $reviewRepository->find($request->request->get('review_id'));
@@ -123,12 +146,12 @@ class RestaurantController extends AbstractController
             $entityManager->persist($reviewResponse);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_restaurant_show_details', ['id'=>$restaurant->getId()], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_restaurant_show_details', ['id' => $restaurant->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('restaurant/details.html.twig', [
             'restaurant' => $restaurant,
-            'formReview'=>$formReview->createView(),
+            'formReview' => $formReview->createView(),
             'formPicture' => $formPicture->createView(),
             'formReviewResponse' => $formReviewResponse->createView(),
         ]);
@@ -163,7 +186,7 @@ class RestaurantController extends AbstractController
     #[Route('/{id}', name: 'app_restaurant_delete', methods: ['POST'])]
     public function delete(Request $request, Restaurant $restaurant, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$restaurant->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $restaurant->getId(), $request->request->get('_token'))) {
             $entityManager->remove($restaurant);
             $entityManager->flush();
         }
@@ -171,17 +194,17 @@ class RestaurantController extends AbstractController
         return $this->redirectToRoute('app_restaurant_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    public function getLastRestaurants(RestaurantRepository $restaurantRepository):Response{
+    public function getLastRestaurants(RestaurantRepository $restaurantRepository): Response
+    {
         return $this->render('home/index.html.twig', [
             'lastRestaurants' => $restaurantRepository->getLastRestaurants(),
         ]);
     }
 
-    public function getReviews(Restaurant $restaurant):Response{
+    public function getReviews(Restaurant $restaurant): Response
+    {
         return $this->render('home/index.html.twig', [
             'reviews' => $restaurant->getReviews(),
         ]);
     }
-
-
 }

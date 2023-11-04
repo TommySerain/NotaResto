@@ -1,30 +1,31 @@
-    <nav class="navbar" style="background-color: #e3f2fd;">
-        <div class="container-fluid">
-            <a class="navbar-brand mx-4" href="/">NotaResto</a>
-            {% if app.user and ("ROLE_ADMIN" in app.user.roles) %}
-                <a class="text-decoration-none text-black" href="{{ path('app_restaurant_index') }}">Admin restaurants</a>
-                <a class="text-decoration-none text-black" href="{{ path('app_city_index') }}">Admin cities</a>
-                <a class="text-decoration-none text-black" href="{{ path('app_picture_index') }}">Admin pictures</a>
-                <a class="text-decoration-none text-black" href="{{ path('app_review_index') }}">Admin reviews</a>
-                <a class="text-decoration-none text-black" href="{{ path('app_user_index') }}">Admin users</a>
-            {% endif %}
-            {% if app.user and ("ROLE_RESTORER" in app.user.roles or "ROLE_ADMIN" in app.user.roles) %}
-                <a class="text-decoration-none text-black" href="{{ path('app_my_restaurants', {'id': app.user.id}) }}">Mes restaurants</a>
-                <a class="text-decoration-none text-black" href="{{path("app_restaurant_new")}}">Ajouter un restaurants</a>
-            {% endif %}
-            <a class="text-decoration-none text-black" href="{{path("app_restaurant_all")}}">Tous les restaurants</a>
-            <a class="text-decoration-none text-black" href="{{path("app_user_all")}}">Tous les utilisateurs</a>
-            <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Code postal" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-            <div class="d-flex">
-                {% if app.user %}
-                    <span class="mx-4 my-auto">Bienvenue {{ app.user.email }}</span>
-                    <a class="btn btn-outline-success mx-4" href="/logout">logout</a>
-                    {% else %}
-                        <a class="btn btn-outline-success mx-4" href="/login">se connecter</a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
+<nav class="navbar" style="background-color: #e3f2fd;">
+	<div class="container-fluid">
+		<a class="navbar-brand mx-4" href="/">NotaResto</a>
+		{% if app.user and ("ROLE_ADMIN" in app.user.roles) %}
+			<a class="text-decoration-none text-black" href="{{ path('app_restaurant_index') }}">Admin restaurants</a>
+			<a class="text-decoration-none text-black" href="{{ path('app_city_index') }}">Admin cities</a>
+			<a class="text-decoration-none text-black" href="{{ path('app_picture_index') }}">Admin pictures</a>
+			<a class="text-decoration-none text-black" href="{{ path('app_review_index') }}">Admin reviews</a>
+			<a class="text-decoration-none text-black" href="{{ path('app_user_index') }}">Admin users</a>
+		{% endif %}
+		{% if app.user and ("ROLE_RESTORER" in app.user.roles or "ROLE_ADMIN" in app.user.roles) %}
+			<a class="text-decoration-none text-black" href="{{ path('app_my_restaurants', {'id': app.user.id}) }}">Mes restaurants</a>
+			<a class="text-decoration-none text-black" href="{{path("app_restaurant_new")}}">Ajouter un restaurants</a>
+		{% endif %}
+		<a class="text-decoration-none text-black" href="{{path("app_restaurant_all")}}">Tous les restaurants</a>
+		<a class="text-decoration-none text-black" href="{{path("app_user_all")}}">Tous les utilisateurs</a>
+		<form class="d-flex" method="GET" action="{{ path('app_restaurants_by_zip') }}">
+			<input class="form-control me-2" type="search" name='zipcode' placeholder="Code postal" aria-label="Search">
+			<button class="btn btn-outline-success" id="search" type="submit">Search</button>
+		</form>
+		<div class="d-flex">
+			{% if app.user %}
+				<span class="mx-4 my-auto">Bienvenue
+					{{ app.user.email }}</span>
+				<a class="btn btn-outline-success mx-4" href="/logout">logout</a>
+			{% else %}
+				<a class="btn btn-outline-success mx-4" href="/login">se connecter</a>
+			{% endif %}
+		</div>
+	</div>
+</nav>
