@@ -2,7 +2,7 @@
 	<div class="container-fluid">
 		<a class="navbar-brand mx-4" href="/">NotaResto</a>
 		{% if app.user and ("ROLE_ADMIN" in app.user.roles) %}
-			<a class="text-decoration-none text-black" href="{{ path('app_admin') }}">Administration</a>
+			<a class="text-decoration-none text-black" href="{{ path('admin') }}">Administration</a>
 		{% endif %}
 		{% if app.user and ("ROLE_RESTORER" in app.user.roles or "ROLE_ADMIN" in app.user.roles) %}
 			<a class="text-decoration-none text-black" href="{{ path('app_my_restaurants', {'id': app.user.id}) }}">Mes restaurants</a>
@@ -10,6 +10,9 @@
 		{% endif %}
 		<a class="text-decoration-none text-black" href="{{path("app_restaurant_all")}}">Tous les restaurants</a>
 		<a class="text-decoration-none text-black" href="{{path("app_user_all")}}">Tous les utilisateurs</a>
+		{% if app.user %}
+			<a class="text-decoration-none text-black" href="{{path("app_user_review")}}">Toutes mes reviews</a>
+		{% endif %}
 		<form class="d-flex" method="GET" action="{{ path('app_restaurants_by_zip') }}">
 			<input class="form-control me-2" type="search" name='zipcode' placeholder="Code postal" aria-label="Search">
 			<button class="btn btn-outline-success" id="search" type="submit">Search</button>

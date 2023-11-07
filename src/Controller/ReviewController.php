@@ -11,10 +11,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 #[Route('/review')]
 class ReviewController extends AbstractController
 {
+    private $user;
+    public function __construct(Security $security)
+    {
+        $this->user = $security->getUser();
+    }
     #[Route('/admin', name: 'app_review_index', methods:['GET'])]
     public function getReviews(ReviewRepository $ReviewRepository): Response
     {
@@ -60,7 +66,11 @@ class ReviewController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($review);
             $em->flush();
-            return $this->redirectToRoute('app_review_index', ['id' => $review->getId()]);
+
+            if (in_array('ROLE_ADMIN',$this->user->getRoles())) {
+                return $this->redirectToRoute('app_review_index', ['id' => $review->getId()]);
+            }
+            return $this->redirectToRoute('app_user_review');
         }
         return $this->renderForm('review/edit.html.twig', [
             'review' => $review,
@@ -71,10 +81,23 @@ class ReviewController extends AbstractController
     #[Route('/{id}', name: 'app_review_delete', methods:['POST'])]
     public function deleteReview(ReviewRepository $reviewRepository, EntityManagerInterface $em,  int $id): Response
     {
+        
         $review = $reviewRepository->find($id);
         $em->remove($review);
         $em->flush();
         
-        return $this->redirectToRoute('app_review_index');
+        if (in_array('ROLE_ADMIN',$this->user->getRoles())) {
+            return $this->redirectToRoute('app_review_index');
+        }
+        return $this->redirectToRoute('app_user_review');
+    }
+
+    #[Route('/myreviews', name: 'app_user_review', methods:['GET'])]
+    public function getUserReviews(ReviewRepository $reviewRepository, Security $security): Response
+    {
+        $user = $security->getUser();
+        return $this->render('review/myReviews.html.twig', [
+            'reviews' => $reviewRepository->findBy(['user'=> $user]),
+        ]);
     }
 }

@@ -6,6 +6,7 @@ use App\Entity\Picture;
 use App\Entity\Restaurant;
 use App\Entity\Review;
 use App\Entity\ReviewResponse;
+use App\Entity\User;
 use App\Form\NewPictureType;
 use App\Form\NewReviewType;
 use App\Form\RestaurantType;
@@ -26,6 +27,13 @@ use Symfony\Component\Security\Core\Security;
 #[Route('/restaurant')]
 class RestaurantController extends AbstractController
 {
+
+    private User $user;
+    public function __construct(Security $security)
+    {
+        $this->user = $security->getUser();
+    }
+
     #[Route('/admin', name: 'app_restaurant_index', methods: ['GET'])]
     public function index(RestaurantRepository $restaurantRepository): Response
     {
@@ -47,7 +55,10 @@ class RestaurantController extends AbstractController
             $entityManager->persist($restaurant);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_restaurant_index', [], Response::HTTP_SEE_OTHER);
+            if (in_array('ROLE_ADMIN',$this->user->getRoles())) {
+                return $this->redirectToRoute('app_restaurant_index', [], Response::HTTP_SEE_OTHER);
+            }
+            return $this->redirectToRoute('app_my_restaurants', ['id'=>$this->user->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('restaurant/new.html.twig', [
@@ -65,15 +76,14 @@ class RestaurantController extends AbstractController
     }
 
     #[Route('/MyRestaurants/{id}', name: 'app_my_restaurants', methods: ['GET'])]
-    public function getRestaurantsByCurrentUser(RestaurantRepository $restaurantRepository, Security $security): Response
+    public function getRestaurantsByCurrentUser(RestaurantRepository $restaurantRepository): Response
     {
-        $user = $security->getUser();
 
-        if (!$user) {
+        if (!$this->user) {
             throw new AccessDeniedException('Il faut être connecté pour accéder à cette page.');
         }
 
-        $restaurants = $restaurantRepository->findBy(['user' => $user]);
+        $restaurants = $restaurantRepository->findBy(['user' => $this->user]);
 
         return $this->render('restaurant/restaurantsByUser.html.twig', [
             'restaurants' => $restaurants,
@@ -173,8 +183,10 @@ class RestaurantController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_restaurant_index', [], Response::HTTP_SEE_OTHER);
+            if (in_array('ROLE_ADMIN',$this->user->getRoles())) {
+                return $this->redirectToRoute('app_restaurant_index', [], Response::HTTP_SEE_OTHER);
+            }
+            return $this->redirectToRoute('app_my_restaurants', ['id'=>$this->user->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('restaurant/edit.html.twig', [
@@ -190,8 +202,12 @@ class RestaurantController extends AbstractController
             $entityManager->remove($restaurant);
             $entityManager->flush();
         }
+        if (in_array('ROLE_ADMIN',$this->user->getRoles())) {
+            return $this->redirectToRoute('app_restaurant_index', [], Response::HTTP_SEE_OTHER);
+        }
 
-        return $this->redirectToRoute('app_restaurant_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_my_restaurants', ['id'=>$this->user->getId()], Response::HTTP_SEE_OTHER);
+
     }
 
     public function getLastRestaurants(RestaurantRepository $restaurantRepository): Response

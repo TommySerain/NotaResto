@@ -17,8 +17,15 @@
                 <div class="p-3 bg-secondary h-100">
                     <h2>{{ restaurant.name }}</h2>
                         <h3>Note : {{restaurant.averageRating}}</h3>
+                        <div class="d-flex justify-content-around">
+                            {{ include('restaurant/_delete_form.html.twig') }}
+                            <a class="text-black my-auto text-decoration-none link-light" href="{{ path('app_restaurant_edit', {'id': restaurant.id}) }}">edit</a>
+                        </div>
+                
+
                 </div>
             </a>
+
         </div>
     {% endfor %}
     </div>

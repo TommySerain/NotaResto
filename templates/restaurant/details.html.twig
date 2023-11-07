@@ -28,6 +28,7 @@
                         <div class="d-flex col-12">
                             <h4 class="me-5">{{ review.rate }}</h4>
                             <p>{{ review.comment }}</p>
+                            <p>{{ review.posted_date|date("d/m/Y") }}</p>
                         </div>
                         {% if review.reviewResponse %}
                             <div class="col-10 ms-auto">

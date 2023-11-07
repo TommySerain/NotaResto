@@ -34,7 +34,7 @@ class HomeController extends AbstractController
         ]);
     }
 
-    #[Route('/amdin', name: 'app_admin')]
+    #[Route('/adminMenu', name: 'app_admin')]
     public function admin()
     {
         return $this->render('home/admin.html.twig');

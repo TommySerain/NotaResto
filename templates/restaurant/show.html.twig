@@ -37,8 +37,12 @@
 
         </tbody>
     </table>
+    {% if 'ROLE_ADMIN' in app.user.roles %}
+        <a href="{{ path('app_restaurant_index') }}">back to list</a>
+    {% else %}
+        <a href="{{ path('app_my_restaurants', {'id': app.user.id}) }}">back to list</a>
 
-    <a href="{{ path('app_restaurant_index') }}">back to list</a>
+    {% endif %}
 
     <a href="{{ path('app_restaurant_edit', {'id': restaurant.id}) }}">edit</a>
 

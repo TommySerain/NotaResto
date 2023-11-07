@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ReviewController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div>
+    <h1>Mes Reviews</h1>
+    <section class="container">
+        <div class="row justify-content-center">
+            {% if reviews %}
+                {% for review in reviews %}
+                <div class="col-4 g-5 text-center">
+                    <div class=" border border-1 border-black rounded-2 h-100">
+                        <p>Note :{{review.rate}}</p>
+                        <p>Commentaire :{{review.comment}}</p>
+                        <p>Restaurant :{{review.restaurant.name}}</p>
+                        <a href="{{ path('app_review_edit', {'id': review.id}) }}">edit</a>
+                        {% include "review/_delete_form.html.twig" %}
+                    </div>
+                    
+                </div>
+                {% endfor %}
+            {% else %}
+            <h2>Vous n'avez posté aucune review</h2>
+            {% endif %}
+        </div>
+    </section>
+    
+</div>
+{% endblock %}

@@ -69,6 +69,11 @@ class Review
         return $this->posted_date;
     }
 
+    public function getPostedDate(): ?DateTime
+    {
+        return $this->posted_date;
+    }
+
     public function setPostedDate(DateTime $posted_date): static
     {
         $this->posted_date = $posted_date;
@@ -115,5 +120,11 @@ class Review
         $this->reviewResponse = $reviewResponse;
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        // return ' '.$this->getId();
+        return 'id : '.$this->getId().' L\'utilisateur '.$this->getUser()->getLastname().'a donné une note de : '.$this->getRate().' pour le restaurant : '. $this->getRestaurant()->getName();
     }
 }
