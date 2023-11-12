@@ -4,7 +4,6 @@
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
@@ -15,12 +14,15 @@
             {% if reviews %}
                 {% for review in reviews %}
                 <div class="col-4 g-5 text-center">
-                    <div class=" border border-1 border-black rounded-2 h-100">
+                    <div class="d-flex flex-column justify-content-between border border-1 border-black rounded-2 h-100 p-3">
                         <p>Note :{{review.rate}}</p>
                         <p>Commentaire :{{review.comment}}</p>
                         <p>Restaurant :{{review.restaurant.name}}</p>
-                        <a href="{{ path('app_review_edit', {'id': review.id}) }}">edit</a>
-                        {% include "review/_delete_form.html.twig" %}
+                        <div>
+                            <a class="btn btn-success mb-2 " href="{{ path('app_review_edit', {'id': review.id}) }}">edit</a>
+                            {% include "review/_delete_form.html.twig" %}
+                        </div>
+
                     </div>
                     
                 </div>

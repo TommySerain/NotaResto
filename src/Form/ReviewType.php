@@ -15,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ReviewType extends AbstractType
 {
 
-    private Array $restaurants;
+    private array $restaurants;
 
     public function __construct(RestaurantRepository $restaurantRepository)
     {

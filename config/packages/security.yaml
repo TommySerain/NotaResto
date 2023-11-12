@@ -41,18 +41,11 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/user/admin, roles: ROLE_ADMIN }
-        - { path: ^/restaurant/admin, roles: ROLE_ADMIN }
-        - { path: ^/picture/admin, roles: ROLE_ADMIN }
-        - { path: ^/review/admin, roles: ROLE_ADMIN }
-        - { path: ^/city, roles: ROLE_ADMIN }
-        - { path: ^/adminMenu, roles: ROLE_ADMIN }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/picture, roles: ROLE_RESTORER }
-        - { path: ^/restaurant/list, roles: ['ROLE_USER', IS_AUTHENTICATED_ANONYMOUSLY] }
-        - { path: ^/restaurant/details, roles: ['ROLE_USER', IS_AUTHENTICATED_ANONYMOUSLY] }
-        - { path: ^/restaurant/restaurantsByZip, roles: ['ROLE_USER', IS_AUTHENTICATED_ANONYMOUSLY] }
-        - { path: ^/restaurant, roles: ROLE_RESTORER }
+        - { path: ^/verifyidentity, roles: [IS_AUTHENTICATED_ANONYMOUSLY] }
+        - { path: ^/user, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/restaurant/new, roles: ROLE_RESTORER }
 
 when@test:
     security:

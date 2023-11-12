@@ -1,0 +1,22 @@
+<div id="carouselExampleIndicators" class="carousel slide">
+    <div class="carousel-indicators">
+        {% for picture in restaurant.pictures %}
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ loop.index0 }}" class="active " aria-current="true" aria-label="Slide {{ loop.index }}"></button>
+        {% endfor %}
+    </div>
+    <div class="carousel-inner">
+        {% for picture in restaurant.pictures %}
+            <div class="carousel-item active" style="max-height: 350px">
+                <img src="{{asset('uploads/restaurantsPictures/' ~ picture.fileName)}}" alt="photo du restaurant {{restaurant.name}}" class="img-fluid m-3 mx-auto " style="height: 100%">
+            </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>

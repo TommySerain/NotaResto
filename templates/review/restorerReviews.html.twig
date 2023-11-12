@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ReviewController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div>
+    <h1>Mes Reviews</h1>
+    <section class="container">
+        <div class="row justify-content-center">
+            {% if reviews %}
+                {% for review in reviews %}
+                    {% if not review.reviewResponse %}
+                        {% set result = review %}
+                        <div class="col-12 g-5">
+                            <div class="border border-1 border-black rounded-2 h-100 p-3">
+                                <div class="col-6 d-flex">
+                                    <p class="col-2">Note :{{review.rate}}</p>
+                                    <p>Restaurant :{{review.restaurant.name}}</p>
+                                </div>
+                                <p>Commentaire :{{review.comment}}</p>
+                                <div>
+                                    <label for="{{ review.id }}">Votre réponse :</label>
+                                    <input name="comment" class="inputAddResponse form-control" id="{{ review.id }}" type="text">
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                {% if result is not empty %}
+                    <button class="responseToAll btn btn-success w-auto mt-3">Répondre à tous</button>
+                {% endif %}
+
+                {% include('review/response_to_all.html.twig') %}
+
+                {% if result is empty %}
+                    <h2>Vous n'avez aucune review sans réponse</h2>
+                {% endif %}
+            {% else %}
+            {% endif %}
+        </div>
+    </section>
+
+</div>
+{% endblock %}

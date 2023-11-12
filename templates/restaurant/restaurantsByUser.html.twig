@@ -4,7 +4,6 @@
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
@@ -16,16 +15,13 @@
             <a href="{{ path('app_restaurant_show_details', {'id': restaurant.id}) }}" class="text-decoration-none text-white">
                 <div class="p-3 bg-secondary h-100">
                     <h2>{{ restaurant.name }}</h2>
-                        <h3>Note : {{restaurant.averageRating}}</h3>
+                        <h3>Note : {{restaurant.averageRating|number_format(2, '.', ',')}}</h3>
                         <div class="d-flex justify-content-around">
                             {{ include('restaurant/_delete_form.html.twig') }}
-                            <a class="text-black my-auto text-decoration-none link-light" href="{{ path('app_restaurant_edit', {'id': restaurant.id}) }}">edit</a>
+                            <a class="btn btn-success" href="{{ path('app_restaurant_edit', {'id': restaurant.id}) }}">edit</a>
                         </div>
-                
-
                 </div>
             </a>
-
         </div>
     {% endfor %}
     </div>

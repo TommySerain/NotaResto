@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints\File;
 
 class PictureType extends AbstractType
 {
-    private Array $restaurants=[];
+    private array $restaurants;
 
     public function __construct(RestaurantRepository $restaurantRepository)
     {

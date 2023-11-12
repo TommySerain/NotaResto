@@ -14,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserType extends AbstractType
 {
-    private Array $cities=[];
+    private array $cities;
 
     public function __construct(CityRepository $cityRepository)
     {

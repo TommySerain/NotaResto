@@ -1,30 +1,52 @@
 <nav class="navbar" style="background-color: #e3f2fd;">
-	<div class="container-fluid">
+	<div class="container-fluid mx-5">
 		<a class="navbar-brand mx-4" href="/">NotaResto</a>
-		{% if app.user and ("ROLE_ADMIN" in app.user.roles) %}
-			<a class="text-decoration-none text-black" href="{{ path('admin') }}">Administration</a>
-		{% endif %}
-		{% if app.user and ("ROLE_RESTORER" in app.user.roles or "ROLE_ADMIN" in app.user.roles) %}
-			<a class="text-decoration-none text-black" href="{{ path('app_my_restaurants', {'id': app.user.id}) }}">Mes restaurants</a>
-			<a class="text-decoration-none text-black" href="{{path("app_restaurant_new")}}">Ajouter un restaurants</a>
-		{% endif %}
 		<a class="text-decoration-none text-black" href="{{path("app_restaurant_all")}}">Tous les restaurants</a>
-		<a class="text-decoration-none text-black" href="{{path("app_user_all")}}">Tous les utilisateurs</a>
-		{% if app.user %}
-			<a class="text-decoration-none text-black" href="{{path("app_user_review")}}">Toutes mes reviews</a>
-		{% endif %}
 		<form class="d-flex" method="GET" action="{{ path('app_restaurants_by_zip') }}">
 			<input class="form-control me-2" type="search" name='zipcode' placeholder="Code postal" aria-label="Search">
 			<button class="btn btn-outline-success" id="search" type="submit">Search</button>
 		</form>
-		<div class="d-flex">
-			{% if app.user %}
-				<span class="mx-4 my-auto">Bienvenue
-					{{ app.user.email }}</span>
-				<a class="btn btn-outline-success mx-4" href="/logout">logout</a>
-			{% else %}
-				<a class="btn btn-outline-success mx-4" href="/login">se connecter</a>
-			{% endif %}
-		</div>
+			<div class="nav-item dropdown me-5">
+				{% if app.user %}
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<span class="mx-4 my-auto">Bienvenue {{ app.user.email }}</span>
+					</a>
+					<ul class="dropdown-menu ">
+					{% if 'ROLE_ADMIN' in app.user.roles %}
+						<p class=" dropdown-item" >Role : Admin</p>
+					{% elseif 'ROLE_RESTORER'  in app.user.roles %}
+						<p class=" dropdown-item" >Role : Restaurateur</p>
+					{% else %}
+						<p class=" dropdown-item" >Role : Client</p>
+					{% endif %}
+					<li><hr class="dropdown-divider"></li>
+						<li><a class=" dropdown-item" href="{{ path('app_user_show', {'id': app.user.id}) }}">Mon compte</a></li>
+						{% if 'ROLE_RESTORER'  in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
+							<li><a class=" dropdown-item" href="{{ path('app_my_restaurants', {'id': app.user.id}) }}">Mes restaurants</a></li>
+							<li><a class=" dropdown-item" href="{{ path('app_restaurant_user_review') }}">Répondre aux reviews</a></li>
+							<li><a class=" dropdown-item" href="{{path("app_restaurant_new")}}">Ajouter un restaurants</a></li>
+						{% endif %}
+						{% if 'ROLE_USER' in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
+							<li><a class=" dropdown-item" href="{{path("app_user_review")}}">Toutes mes reviews</a>
+						{% endif %}
+						{% if 'ROLE_ADMIN' in app.user.roles %}
+							<li><a class=" dropdown-item" href="{{ path('admin') }}">Administration</a>
+						{% endif %}
+						<li><hr class="dropdown-divider"></li>
+						<li><a class=" dropdown-item" href="/logout">logout</a></li>
+
+
+
+					</ul>
+				{% else %}
+					<ul class="dropdown-menu ">
+						<li><a class=" dropdown-item" href="/login">Se connecter</a></li>
+						<li><a class=" dropdown-item" href="{{ path('app_register') }}" methods="POST">S'inscrire</a></li>
+					</ul>
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						Connexion
+					</a>
+				{% endif %}
+			</div>
 	</div>
 </nav>

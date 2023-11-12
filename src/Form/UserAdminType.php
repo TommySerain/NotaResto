@@ -14,18 +14,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserAdminType extends AbstractType
 {
-    private Array $cities=[];
     private $possibleRoles = [
         'ROLE_ADMIN' => 'ROLE_ADMIN',
         'ROLE_RESTORER' => 'ROLE_RESTORER',
         'ROLE_USER' => 'ROLE_USER',
     ];
-
-
-    public function __construct(CityRepository $cityRepository)
-    {
-        $this->cities = $cityRepository->findAll();
-    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

@@ -1,0 +1,27 @@
+
+<script>
+    $(".responseToAll").click(()=>{
+        let inputNotEmpties = [];
+        let allInputs = $(".inputAddResponse");
+        allInputs.each(function() {
+            if (this.value !== "") {
+                inputNotEmpties.push({
+                    id: this.id,
+                    value: this.value
+                });
+            }
+        });
+        console.log(inputNotEmpties);
+        $.ajax({
+            method: 'POST',
+            url: '/review/response/responseToAll',
+            data: JSON.stringify(inputNotEmpties),
+            contentType: 'application/json; charset=utf-8',
+        }).done(function(data) {
+            console.log('Success:', data);
+            location.reload();
+        }).fail(function() {
+            alert("uh oh it failed");
+        })
+    });
+</script>

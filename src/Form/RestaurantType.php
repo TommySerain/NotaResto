@@ -12,7 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class RestaurantType extends AbstractType
 {
-    private Array $cities=[];
+    private array $cities;
 
     public function __construct(CityRepository $cityRepository)
     {

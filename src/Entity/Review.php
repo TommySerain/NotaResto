@@ -22,7 +22,7 @@ class Review
     private ?int $rate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?DateTime $posted_date = null;
+    private ?DateTime $postedDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
@@ -64,19 +64,14 @@ class Review
         return $this;
     }
 
-    public function getposted_date(): ?DateTime
-    {
-        return $this->posted_date;
-    }
-
     public function getPostedDate(): ?DateTime
     {
-        return $this->posted_date;
+        return $this->postedDate;
     }
 
-    public function setPostedDate(DateTime $posted_date): static
+    public function setPostedDate(DateTime $postedDate): static
     {
-        $this->posted_date = $posted_date;
+        $this->postedDate = $postedDate;
 
         return $this;
     }

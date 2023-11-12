@@ -33,7 +33,7 @@ class ReviewCrudController extends AbstractCrudController
         return $filters
             ->add(EntityFilter::new('user'))
             ->add(EntityFilter::new('restaurant'))
-            ->add(DateTimeFilter::new('posted_date'))
+            ->add(DateTimeFilter::new('postedDate'))
         ;
     }
 
@@ -45,7 +45,7 @@ class ReviewCrudController extends AbstractCrudController
             NumberField::new('rate'),
             TextField::new('comment'),
             AssociationField::new('user'),
-            DateTimeField::new('posted_date')->setFormat('dd.MM.yyyy '),
+            DateTimeField::new('postedDate')->setFormat('dd.MM.yyyy '),
             AssociationField::new('restaurant'),
             AssociationField::new('reviewResponse')
         ];

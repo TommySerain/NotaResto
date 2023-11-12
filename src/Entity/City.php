@@ -21,10 +21,10 @@ class City
     #[ORM\Column(length: 10)]
     private ?string $zipCode = null;
 
-    #[ORM\OneToMany(mappedBy: 'city', targetEntity: Restaurant::class)]
+    #[ORM\OneToMany(mappedBy: 'city', targetEntity: Restaurant::class, cascade: ["remove"])]
     private Collection $restaurants;
 
-    #[ORM\OneToMany(mappedBy: 'city', targetEntity: User::class)]
+    #[ORM\OneToMany(mappedBy: 'city', targetEntity: User::class, cascade: ["remove"])]
     private Collection $users;
 
     public function __construct()

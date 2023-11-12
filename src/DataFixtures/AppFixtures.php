@@ -45,6 +45,7 @@ class AppFixtures extends Fixture
         ->setRoles(['ROLE_ADMIN'])
         ;
         $manager->persist($userAdmin);
+        $clientUsers[] = $userAdmin;
         $users[]= $userAdmin;
         for ($i=0; $i < self::NB_USER_RESTORER; $i++) { 
             $userRestorer = new User();
@@ -71,7 +72,7 @@ class AppFixtures extends Fixture
             ;
 
             $manager->persist($userRegular);
-            // $users[]=$userRegular;
+            $clientUsers[]=$userRegular;
         }
 
 
@@ -92,7 +93,7 @@ class AppFixtures extends Fixture
             $review->setComment($faker->text())
             ->setRate($faker->numberBetween(1, 5))
             ->setPostedDate($faker->dateTime())
-            ->setUser($faker->randomElement($users))
+            ->setUser($faker->randomElement($clientUsers))
             ->setRestaurant($faker->randomElement($restaurants));
             $manager->persist($review);
             $reviews[] = $review;

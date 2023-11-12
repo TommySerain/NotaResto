@@ -1,4 +1,34 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="container">
+        <div class="my-custom-class-for-errors">
+            {{ form_errors(form) }}
+        </div>
+
+        <div class="row justify-content-evenly">
+            <div class="col-5">
+                {{ form_row(form.email) }}
+            </div>
+            <div class="col-5" id="some-custom-id">
+                {{ form_row(form.password) }}
+            </div>
+
+            <div class="col-5">
+                {{ form_row(form.firstname) }}
+            </div>
+            <div class="col-5" id="some-custom-id">
+                {{ form_row(form.lastname) }}
+            </div>
+
+            <div class="col-5">
+                {{ form_row(form.address) }}
+            </div>
+            <div class="col-5" id="some-custom-id">
+                {{ form_row(form.city) }}
+            </div>
+
+            <div class="text-center" id="some-custom-id">
+                <button class="btn">{{ button_label|default('Save') }}</button>        </div>
+        </div>
+    </div>
 {{ form_end(form) }}
+

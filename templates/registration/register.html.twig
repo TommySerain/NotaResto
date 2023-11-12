@@ -5,21 +5,35 @@
 {% block body %}
     <section class="container">
         <h1>Register</h1>
-
-        {{ form_errors(registrationForm) }}
-
         {{ form_start(registrationForm) }}
-            {{ form_row(registrationForm.email) }}
-            {{ form_row(registrationForm.plainPassword, {
-                label: 'Password'
-            }) }}
-            {{form_row(registrationForm.firstname)}}
-            {{form_row(registrationForm.lastname)}}
-            {{form_row(registrationForm.address)}}
-            {{form_row(registrationForm.city)}}
-            {{ form_row(registrationForm.agreeTerms) }}
+            <div class="row justify-content-evenly">
+                {{ form_errors(registrationForm) }}
+                <div class="col-5">
+                    {{ form_row(registrationForm.email) }}
+                </div>
+                <div class="col-5">
+                    {{ form_row(registrationForm.plainPassword, {
+                        label: 'Password'
+                    }) }}
+                </div>
+                <div class="col-5">
+                    {{form_row(registrationForm.firstname)}}
+                </div>
+                <div class="col-5">
+                    {{form_row(registrationForm.lastname)}}
+                </div>
+                <div class="col-5">
+                    {{form_row(registrationForm.address)}}
+                </div>
+                <div class="col-5">
+                    {{form_row(registrationForm.city)}}
+                </div>
+                <div class="col-5">
+                    {{ form_row(registrationForm.agreeTerms) }}
+                </div>
+                <button type="submit" class="btn bg-success text-white w-auto">S'inscrire</button>
+            </div>
 
-            <button type="submit" class="btn bg-success">Register</button>
         {{ form_end(registrationForm) }}
     </section>
 {% endblock %}

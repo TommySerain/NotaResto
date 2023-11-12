@@ -51,6 +51,17 @@ class ReviewRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
+
+    public function getByRestaurantUser($userId) {
+        return $this->createQueryBuilder('r')
+            ->innerJoin('r.restaurant', 'restaurant')
+            ->where('restaurant.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+
+
 //    /**
 //     * @return Review[] Returns an array of Review objects
 //     */

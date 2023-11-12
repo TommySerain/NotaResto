@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class RegistrationFormType extends AbstractType
 {
 
-    private Array $cities=[];
+    private array $cities;
 
     public function __construct(CityRepository $cityRepository)
     {

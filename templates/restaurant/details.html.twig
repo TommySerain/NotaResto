@@ -7,9 +7,7 @@
         <h1>Détails du Restaurant</h1>
         <div class="row w-50 mx-auto border border-2 border-black rounded-3">
             <div class="d-flex col-12 justify-content-center">
-                {% for picture in restaurant.pictures %}
-                <img src="{{asset('uploads/restaurantsPictures/' ~ picture.fileName)}}" alt="photo du restaurant {{restaurant.name}}" class="img-fluid m-5 mx-auto" >
-                {% endfor %}
+                {% include('restaurant/carousel.html.twig') %}
             </div>
             <div class="d-flex col-12 justify-content-center">
                 <h3> {{ restaurant.name }}</h3>
@@ -25,29 +23,38 @@
             <div class="col-12">
                 <h3>Reviews</h3>
                 {% for review in restaurant.reviews %}
+                    {% if not review.reviewResponse %}
+                        {% set result = review %}
+                    {% endif %}
                         <div class="d-flex col-12">
                             <h4 class="me-5">{{ review.rate }}</h4>
                             <p>{{ review.comment }}</p>
-                            <p>{{ review.posted_date|date("d/m/Y") }}</p>
+                            <p class="ms-auto">{{ review.postedDate|date("d/m/Y") }}</p>
                         </div>
                         {% if review.reviewResponse %}
-                            <div class="col-10 ms-auto">
-                                <p>Reponse du gérant : </p>
+                            <div class="d-flex col-10 ms-auto">
+                                <p>Reponse du gérant : &nbsp;</p>
                                 <p>{{review.reviewResponse.comment}}</p>
+                                <p class="ms-auto">{{ review.reviewResponse.getPostedDate()|date("d/m/Y") }}</p>
                             </div>
                         {% else %}
                             {% if restaurant.user is same as app.user %}
-                            {{form_start(formReviewResponse)}}
-                                {{form_widget(formReviewResponse)}}
-                                <input type="hidden" name="review_id" value="{{ review.id }} "data-review-id="{{ review.id }}">
-                                {{form_end(formReviewResponse)}}
+                                <div>
+                                    <label for="{{ review.id }}">Votre réponse :</label>
+                                    <input name="comment" class="inputAddResponse form-control" id="{{ review.id }}" type="text">
+                                </div>
                             {% endif %}
                         {% endif %}
                     <hr class="w-75 mx-auto">
                 {% endfor %}
+
+                {% if result is not empty and app.user is same as restaurant.user %}
+                    <button class="responseToAll btn btn-success w-auto d-block mx-auto my-3">Répondre à tous</button>
+                {% endif %}
+                {% include('review/response_to_all.html.twig') %}
             </div>
         </div>
-        {% if restaurant.user is not same as app.user %}
+        {% if app.user and (('ROLE_USER' in app.user.roles and 'ROLE_RESTORER' not in app.user.roles ) or 'ROLE_ADMIN' in app.user.roles or ('ROLE_ADMIN' in app.user.roles and 'ROLE_RESTORER' in app.user.roles)) %}
             <h3>Ajouter une review : </h3>
             <div>
                 {{form_start(formReview)}}

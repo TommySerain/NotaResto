@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Picture;
 use App\Form\PictureType;
-use App\Repository\PictureRepository;
 use App\Services\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,13 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/picture')]
 class PictureController extends AbstractController
 {
-    #[Route('/admin', name: 'app_picture_index', methods: ['GET'])]
-    public function index(PictureRepository $pictureRepository): Response
-    {
-        return $this->render('picture/index.html.twig', [
-            'pictures' => $pictureRepository->findAll(),
-        ]);
-    }
 
     #[Route('/new', name: 'app_picture_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, FileUploader $fileUploader): Response
@@ -35,8 +27,8 @@ class PictureController extends AbstractController
             $brochureFile = $form->get('fileName')->getData();
 
             if ($brochureFile) {
-                $brochureFilenName = $fileUploader->upload($brochureFile);
-                $picture->setFileName($brochureFilenName);
+                $brochureFileName = $fileUploader->upload($brochureFile);
+                $picture->setFileName($brochureFileName);
             }else{
                 $picture->setFileName(
                     new File($this->getParameter('pictures_directory'.'/'.$picture->getFileName()))
@@ -46,20 +38,12 @@ class PictureController extends AbstractController
             $entityManager->persist($picture);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_picture_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('picture/new.html.twig', [
             'picture' => $picture,
             'form' => $form,
-        ]);
-    }
-
-    #[Route('/admin/{id}', name: 'app_picture_show', methods: ['GET'])]
-    public function show(Picture $picture): Response
-    {
-        return $this->render('picture/show.html.twig', [
-            'picture' => $picture,
         ]);
     }
 
@@ -72,7 +56,7 @@ class PictureController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_picture_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('picture/edit.html.twig', [
@@ -89,6 +73,6 @@ class PictureController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_picture_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
     }
 }

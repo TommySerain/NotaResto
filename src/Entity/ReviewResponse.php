@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ReviewResponseRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,7 +16,7 @@ class ReviewResponse
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $postedDate = null;
+    private ?DateTimeInterface $postedDate = null;
 
     #[ORM\Column(length: 255)]
     private ?string $comment = null;
@@ -29,12 +30,12 @@ class ReviewResponse
         return $this->id;
     }
 
-    public function getPostedDate(): ?\DateTimeInterface
+    public function getPostedDate(): ?DateTimeInterface
     {
         return $this->postedDate;
     }
 
-    public function setPostedDate(\DateTimeInterface $postedDate): static
+    public function setPostedDate(DateTimeInterface $postedDate): static
     {
         $this->postedDate = $postedDate;
 

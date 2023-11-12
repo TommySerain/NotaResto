@@ -24,10 +24,10 @@ class Restaurant
     #[ORM\Column(length: 255)]
     private ?string $address = null;
 
-    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: Review::class)]
+    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: Review::class, cascade: ["remove"])]
     private Collection $reviews;
 
-    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: Picture::class)]
+    #[ORM\OneToMany(mappedBy: 'restaurant', targetEntity: Picture::class, cascade: ["remove"])]
     private Collection $pictures;
 
     #[ORM\ManyToOne(inversedBy: 'restaurants')]
@@ -166,8 +166,10 @@ class Restaurant
                 $count++;
             }
             return $total / $count;
-        }
+        }else{
+
         return "Aucune note";
+        }
     }
 
     public function getUser(): ?User

@@ -25,9 +25,11 @@
                 value="{{ csrf_token('authenticate') }}"
             >
 
-            <button class="btn btn-lg btn-primary" type="submit">
-                Sign in
+            <button class="btn btn-lg btn-primary mt-3" type="submit">
+                Connexion
             </button>
+
+            <a class="d-block" href="{{ path('app_user_verify') }}">Mot de passe oublié</a>
         </form>
     </section>
 {% endblock %}

@@ -24,7 +24,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var string|null The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
@@ -42,10 +42,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?City $city = null;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Restaurant::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Restaurant::class, cascade: ["remove"])]
     private Collection $restaurant;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Review::class, cascade: ["remove"])]
     private Collection $reviews;
 
     public function __construct()
@@ -96,7 +96,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        if(empty($roles)){
+            $roles[] = 'ROLE_USER';
+        }
 
         return array_unique($roles);
     }
@@ -104,7 +106,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
-
+        if(empty($roles)){
+            $this->roles[] = 'ROLE_USER';
+        }
         return $this;
     }
 
