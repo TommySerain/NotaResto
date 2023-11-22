@@ -8,7 +8,7 @@
 </style>
 
 <section class="container">
-    <h1 class="fs-1 fw-bold">Bienvenue sur NotaResto</h1>
+    <h1 class="fs-1 fw-bold">Mes restaurants</h1>
     <div class= "row">
     {% for restaurant in restaurants %}
         <div class="col-4 my-3 g-4 text-white">
@@ -18,7 +18,7 @@
                         <h3>Note : {{restaurant.averageRating|number_format(2, '.', ',')}}</h3>
                         <div class="d-flex justify-content-around">
                             {{ include('restaurant/_delete_form.html.twig') }}
-                            <a class="btn btn-success" href="{{ path('app_restaurant_edit', {'id': restaurant.id}) }}">edit</a>
+                            <a id="btn{{ restaurant.id }}" class="btn btn-success" href="{{ path('app_restaurant_edit', {'id': restaurant.id}) }}">edit</a>
                         </div>
                 </div>
             </a>

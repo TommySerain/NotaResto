@@ -68,11 +68,15 @@ class RestaurantController extends AbstractController
         ]);
     }
 
-    #[Route('/MyRestaurants/{id}', name: 'app_my_restaurants', methods: ['GET'])]
+    #[Route('/MyRestaurants', name: 'app_my_restaurants', methods: ['GET'])]
     public function getRestaurantsByCurrentUser(RestaurantRepository $restaurantRepository): Response
     {
 
         $restaurants = $restaurantRepository->findBy(['user' => $this->user]);
+
+        if ($this->user !== $restaurants[0]->getUser()){
+            return $this->redirectToRoute('app_home', [], Response::HTTP_SEE_OTHER);
+        }
 
         return $this->render('restaurant/restaurantsByUser.html.twig', [
             'restaurants' => $restaurants,
@@ -166,6 +170,13 @@ class RestaurantController extends AbstractController
     {
         $form = $this->createForm(RestaurantType::class, $restaurant);
         $form->handleRequest($request);
+        if (in_array('ROLE_USER',$this->user->getRoles())){
+            return $this->redirectToRoute('app_home', [], Response::HTTP_TEMPORARY_REDIRECT );
+        }
+
+        if ($this->user !== $restaurant->getUser()){
+            return $this->redirectToRoute('app_home', [], Response::HTTP_TEMPORARY_REDIRECT);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
@@ -182,7 +193,7 @@ class RestaurantController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_restaurant_delete', methods: ['POST'])]
-    public function delete(Request $request, Restaurant $restaurant, EntityManagerInterface $entityManager,RestaurantRepository $restaurantRepository): Response
+    public function delete(Request $request, Restaurant $restaurant, EntityManagerInterface $entityManager, RestaurantRepository $restaurantRepository): Response
     {
         if ($this->isCsrfTokenValid('delete' . $restaurant->getId(), $request->request->get('_token'))) {
             $entityManager->remove($restaurant);

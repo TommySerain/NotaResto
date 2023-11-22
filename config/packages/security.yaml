@@ -46,6 +46,7 @@ security:
         - { path: ^/verifyidentity, roles: [IS_AUTHENTICATED_ANONYMOUSLY] }
         - { path: ^/user, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/restaurant/new, roles: ROLE_RESTORER }
+        - { path: ^/restaurant/MyRestaurants, roles: ROLE_RESTORER }
 
 when@test:
     security:

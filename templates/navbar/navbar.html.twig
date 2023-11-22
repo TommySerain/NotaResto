@@ -22,7 +22,7 @@
 					<li><hr class="dropdown-divider"></li>
 						<li><a class=" dropdown-item" href="{{ path('app_user_show', {'id': app.user.id}) }}">Mon compte</a></li>
 						{% if 'ROLE_RESTORER'  in app.user.roles or 'ROLE_ADMIN' in app.user.roles %}
-							<li><a class=" dropdown-item" href="{{ path('app_my_restaurants', {'id': app.user.id}) }}">Mes restaurants</a></li>
+							<li><a class=" dropdown-item" href="{{ path('app_my_restaurants') }}">Mes restaurants</a></li>
 							<li><a class=" dropdown-item" href="{{ path('app_restaurant_user_review') }}">Répondre aux reviews</a></li>
 							<li><a class=" dropdown-item" href="{{path("app_restaurant_new")}}">Ajouter un restaurants</a></li>
 						{% endif %}

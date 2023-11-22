@@ -31,10 +31,4 @@ class HomeController extends AbstractController
             'restaurants'=>$allRestaurant
         ]);
     }
-
-    #[Route('/adminMenu', name: 'app_admin')]
-    public function admin(): Response
-    {
-        return $this->render('home/admin.html.twig');
-    }
 }
