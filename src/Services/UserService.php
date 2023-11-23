@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Entity\City;
 use App\Entity\User;
 use App\Repository\CityRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,10 +20,10 @@ class UserService
            string $firstname,
            string $lastname,
            string $address,
-           int $city_id,
+           City $city,
         ):User
     {
-        $city=$this->cityRepository->findOneBy(['id'=>$city_id]);
+//        $city=$this->cityRepository->findOneBy(['name'=>$city_name]);
         $user = new User();
         $user->setEmail($email);
         $user->setRoles([$roles]);

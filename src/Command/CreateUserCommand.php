@@ -26,18 +26,18 @@ class CreateUserCommand extends Command
     private bool $requireFirstname;
     private bool $requireLastname;
     private bool $requireAddress;
-    private bool $requireCity_id;
+    private bool $requireCity;
     private bool $requireRole;
 
     public function __construct(readonly UserRepository $userRepository, readonly EntityManagerInterface $entityManager, readonly UserPasswordHasherInterface $userPasswordHarsher, readonly CityRepository $cityRepository)
     {
-        $this->requireEmail = true;
-        $this->requirePassword = true;
-        $this->requireFirstname = true;
-        $this->requireLastname = true;
-        $this->requireAddress = true;
-        $this->requireCity_id = true;
-        $this->requireRole = true;
+        $this->requireEmail = false;
+        $this->requirePassword = false;
+        $this->requireFirstname = false;
+        $this->requireLastname = false;
+        $this->requireAddress = false;
+        $this->requireCity = false;
+        $this->requireRole = false;
 
         parent::__construct();
     }
@@ -51,7 +51,7 @@ class CreateUserCommand extends Command
             ->addArgument('firstname',$this->requireFirstname ? InputArgument::REQUIRED : InputArgument::OPTIONAL, 'User firstname')
             ->addArgument('lastname',$this->requireLastname ? InputArgument::REQUIRED : InputArgument::OPTIONAL, 'User lastname')
             ->addArgument('address',$this->requireAddress ? InputArgument::REQUIRED : InputArgument::OPTIONAL, 'User address')
-            ->addArgument('city_id',$this->requireCity_id ? InputArgument::REQUIRED : InputArgument::OPTIONAL, 'User city_id')
+            ->addArgument('city',$this->requireCity ? InputArgument::REQUIRED : InputArgument::OPTIONAL, 'User city_id')
             ->addArgument('role',$this->requireRole ? InputArgument::REQUIRED : InputArgument::OPTIONAL, 'User role')
         ;
     }
@@ -65,38 +65,65 @@ class CreateUserCommand extends Command
         $firstname = $input->getArgument('firstname');
         $lastname = $input->getArgument('lastname');
         $address = $input->getArgument('address');
-        $city_id = $input->getArgument('city_id');
+        $city = $input->getArgument('city');
         $role = $input->getArgument('role');
 
-        if ($email) {
-            $io->note(sprintf('You passed an email : %s', $email));
-            if ($this->userRepository->findOneBy(['email'=>$email])){
-                $io->error('$email is already registered ');
-                return Command::FAILURE;
+        if ($email || $password || $firstname || $lastname || $address || $city || $role){
+            $city=$this->cityRepository->findOneBy(['name'=>$city]);
+            if (!$city){
+                $io->note('This city is not registered');
             }
         }
-        if ($password) {
-            $io->note(sprintf('You passed a password : %s', $password));
+
+        if (!$email || !$password || !$firstname || !$lastname || !$address || !$city || !$role) {
+            $io->title('Create a new user');
+            $cities= $this->cityRepository->findAll();
+
+            $email = $io->ask('Enter user email:', $email);
+            $password = $io->askHidden('Enter user password:');
+            $firstname = $io->ask('Enter user firstname:', $firstname);
+            $lastname = $io->ask('Enter user lastname:', $lastname);
+            $address = $io->ask('Enter user address:', $address);
+            $city = $io->choice('Enter user city_name:', $cities);
+            $role = $io->choice('Select user role:', ['ROLE_ADMIN', 'ROLE_RESTORER', 'ROLE_USER']);
         }
-        if ($firstname) {
-            $io->note(sprintf('You passed a firstname : %s', $firstname));
+
+
+        while ($this->userRepository->findOneBy(['email'=>$email])){
+            $io->note('$email is already registered ');
+            $email = $io->ask('Enter user email:', $email);
         }
-        if ($lastname) {
-            $io->note(sprintf('You passed a lastname : %s', $lastname));
+        if ($role!== 'ROLE_ADMIN' && $role!== 'ROLE_RESTORER' && $role!== 'ROLE_USER'){
+            $io->note('role must be : ROLE_ADMIN, ROLE_RESTORER or ROLE_USER ');
+            $role = $io->choice('Select user role:', ['ROLE_ADMIN', 'ROLE_RESTORER', 'ROLE_USER']);
         }
-        if ($address) {
-            $io->note(sprintf('You passed an address : %s', $address));
+
+        if ($email=="" || $password=="" || $firstname=="" || $lastname=="" || $address=="" || $city=="" || $role==""){
+            $io->error('One or more arguments are empty');
+            return Command::FAILURE;
         }
-        if ($city_id) {
-            $io->note(sprintf('You passed a city_id : %s', $city_id));
-        }
-        if ($role) {
-            $io->note(sprintf('You passed a role : %s', $role));
-            if ($role!== 'ROLE_ADMIN'&& $role!== 'ROLE_RESTORER'&& $role!== 'ROLE_USER'){
-                $io->error('role must be : ROLE_ADMIN, ROLE_RESTORER or ROLE_USER ');
-                return Command::FAILURE;
-            }
-        }
+
+        $io->note(sprintf('You passed an email : %s', $email));
+
+
+        $io->note(sprintf('You passed a password : %s', $password));
+
+
+        $io->note(sprintf('You passed a firstname : %s', $firstname));
+
+
+        $io->note(sprintf('You passed a lastname : %s', $lastname));
+
+
+        $io->note(sprintf('You passed an address : %s', $address));
+
+
+        $io->note(sprintf('You passed a city : %s', $city));
+
+
+        $io->note(sprintf('You passed a role : %s', $role));
+
+
 
         $userService = new UserService($this->entityManager, $this->userPasswordHarsher, $this->cityRepository);
         $confirm = $io->confirm('Are you sure you want to create the user'.$email.' ?');
@@ -104,7 +131,7 @@ class CreateUserCommand extends Command
             $io->block('Canceled');
             return Command::INVALID;
         }
-        $user=$userService->createUser($email, $role, $password, $firstname, $lastname, $address, $city_id);
+        $user=$userService->createUser($email, $role, $password, $firstname, $lastname, $address, $city);
 
 
 
