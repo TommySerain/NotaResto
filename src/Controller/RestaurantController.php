@@ -66,7 +66,7 @@ class RestaurantController extends AbstractController
     {
         $restaurants = $restaurantRepository->findAll();
         $paginationRestaurants = $paginator->paginate(
-            $restaurantRepository->paginationQuery(),
+            $restaurants,
             $request->query->get('page', 1),
             10
         );
