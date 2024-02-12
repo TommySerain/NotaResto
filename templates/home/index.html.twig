@@ -14,23 +14,49 @@
 	<section class="container">
 		<h1 class="fs-1 fw-bold">Bienvenue sur NotaResto</h1>
 		<div class="row">
-			{% for restaurant in restaurants %}
-				<div class="col-4 my-3 g-4">
-					<a href="{{ path('app_restaurant_show_details', {'id': restaurant.id}) }}" class="text-decoration-none text-white">
-						<div class="p-3 bg-secondary h-100">
-							<h2>{{ restaurant.name }}</h2>
-							<h3>Note :
-								{% if restaurant.averageRating is not same as "Aucune note" %}
+			{% if paginationRestaurants is defined %}
+				{% for restaurant in paginationRestaurants %}
+					<div class="col-4 my-3 g-4">
+						<a href="{{ path('app_restaurant_show_details', {'id': restaurant.id}) }}" class="text-decoration-none text-white">
+							<div class="p-3 bg-secondary h-100">
+								<h2>{{ restaurant.name }}</h2>
+								<h3>Note :
+									{% if restaurant.averageRating is not same as "Aucune note" %}
 									{{restaurant.averageRating|number_format(1, '.', ',')}}
-								{% else %}
+									{% else %}
 									{{restaurant.averageRating}}</h3>
 								{% endif %}
-							<h4>Code postal :
-								{{restaurant.city.zipcode}}</h4>
+								<h4>Code postal :
+									{{restaurant.city.zipcode}}</h4>
+							</div>
+						</a>
+					</div>
+				{% endfor %}
+				{% else %}
+					{% for restaurant in restaurants %}
+						<div class="col-4 my-3 g-4">
+							<a href="{{ path('app_restaurant_show_details', {'id': restaurant.id}) }}" class="text-decoration-none text-white">
+								<div class="p-3 bg-secondary h-100">
+									<h2>{{ restaurant.name }}</h2>
+									<h3>Note :
+										{% if restaurant.averageRating is not same as "Aucune note" %}
+										{{restaurant.averageRating|number_format(1, '.', ',')}}
+										{% else %}
+										{{restaurant.averageRating}}</h3>
+									{% endif %}
+									<h4>Code postal :
+										{{restaurant.city.zipcode}}</h4>
+								</div>
+							</a>
 						</div>
-					</a>
+					{% endfor %}
+			{% endif %}
+			{% if paginationRestaurants is defined %}
+				<div class="mt-3 d-flex justify-content-end">
+					{{ knp_pagination_render(paginationRestaurants) }}
 				</div>
-			{% endfor %}
+			{% endif %}
+
 		</div>
 	</section>
 {% endblock %}

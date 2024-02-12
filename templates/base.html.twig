@@ -9,6 +9,13 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
+            <style>
+                .pagination{
+                    display: flex;
+                    gap: 10px;
+                }
+            </style>
+
         {% endblock %}
 
         {% block javascripts %}

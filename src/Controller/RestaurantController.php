@@ -17,6 +17,7 @@ use App\Repository\ReviewRepository;
 use App\Services\FileUploader;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,10 +62,17 @@ class RestaurantController extends AbstractController
     }
 
     #[Route('/', name: 'app_restaurant_all', methods: ['GET'])]
-    public function getAllRestaurants(RestaurantRepository $restaurantRepository): Response
+    public function getAllRestaurants(RestaurantRepository $restaurantRepository, Request $request, PaginatorInterface $paginator): Response
     {
+        $restaurants = $restaurantRepository->findAll();
+        $paginationRestaurants = $paginator->paginate(
+            $restaurantRepository->paginationQuery(),
+            $request->query->get('page', 1),
+            10
+        );
         return $this->render('home/index.html.twig', [
-            'restaurants' => $restaurantRepository->findAll(),
+            'restaurants' => $restaurants,
+            'paginationRestaurants' => $paginationRestaurants
         ]);
     }
 
